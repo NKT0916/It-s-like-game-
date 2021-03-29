@@ -1,4 +1,4 @@
-﻿#include <stdio.h>
+#include <stdio.h>
 
 extern void StartScreen();
 extern void GameSetting();
