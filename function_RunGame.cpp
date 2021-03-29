@@ -10,17 +10,98 @@
 #define SPACE 32
 #define ENTER 13
 
-extern int Plane[2][14], Map[60][40], Bullet_Start_Path[2], key, Enemy_Spawn, score, Move;
+extern int Plane[2][14], Map[60][40], Enemy[3][5], Bullet_Start_Path[2], key, Enemy_Spawn, score;
 
 extern void Clear_Consol();
 
+void ExitTheGame()
+{
+	Clear_Consol();
+
+	system("mode con cols=35 lines=20");
+	while (1)
+	{
+		Clear_Consol();
+
+		puts("          â”â”â”â”â”³â”â”“ â”â”³â”â”â”â”“");
+		puts("          â”ƒâ”â”â”â”«â”ƒâ”—â”“â”ƒâ”£â”“â”â”“â”ƒ");
+		puts("          â”ƒâ”—â”â”â”«â”â”“â”—â”›â”ƒâ”ƒâ”ƒâ”ƒâ”ƒ");
+		puts("          â”ƒâ”â”â”â”«â”ƒâ”—â”“â”ƒâ”ƒâ”ƒâ”ƒâ”ƒâ”ƒ");
+		puts("          â”ƒâ”—â”â”â”«â”ƒ â”ƒâ”ƒâ”£â”›â”—â”›â”ƒ");
+		puts("          â”—â”â”â”â”»â”› â”—â”â”»â”â”â”â”›");
+		puts("   â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”");
+		printf_s("   â”‚         SCORE : %d        â”‚\n", score);
+		puts("   â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜");
+
+		puts("\ní•œ ë²ˆ ë” ëˆ„ë¥´ë©´ ê²Œìž„ì´ ì¢…ë£Œë©ë‹ˆë‹¤..");
+
+		Sleep(200);
+
+		if (_kbhit())
+		{
+			key = _getch();
+			key = '\0';
+			break;
+		}
+	}
+
+	system("cls");
+
+	puts("          â”â”â”â”â”³â”â”“ â”â”³â”â”â”â”“");
+	puts("          â”ƒâ”â”â”â”«â”ƒâ”—â”“â”ƒâ”£â”“â”â”“â”ƒ");
+	puts("          â”ƒâ”—â”â”â”«â”â”“â”—â”›â”ƒâ”ƒâ”ƒâ”ƒâ”ƒ");
+	puts("          â”ƒâ”â”â”â”«â”ƒâ”—â”“â”ƒâ”ƒâ”ƒâ”ƒâ”ƒâ”ƒ");
+	puts("          â”ƒâ”—â”â”â”«â”ƒ â”ƒâ”ƒâ”£â”›â”—â”›â”ƒ");
+	puts("          â”—â”â”â”â”»â”› â”—â”â”»â”â”â”â”›");
+	puts("   â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”");
+	printf_s("   â”‚         SCORE : %d        â”‚\n", score);
+	puts("   â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜");
+
+	exit(0);
+}
+
 void RunGame_SetEnemy()
 {
-	int i, j, Enemy_StartPath_Y = 0, Enemy_StartPath_X = 0, check = 0;
+	int i, j, Enemy_StartPath_Y = 0, basket_RunGame_SetEnemy/*Enemy_StartPath_X = 0,*/;
 
-	Enemy_StartPath_Y = rand() % 38 + 1;
-	Enemy_StartPath_X = rand() % 52 + 1;
+	Enemy_StartPath_Y = rand() % (36 + 1 - 3) + 3;
+	//Enemy_StartPath_X = rand() % 52 + 1;
+	
+	Enemy_Spawn++;
+	
+	if (Enemy_Spawn == 15)
+	{
+		Enemy_Spawn = 0;
+		Map[1][Enemy_StartPath_Y] = 4;
+	}
 
+	for (i = 60 - 1; i >= 0; i--)
+	{
+		for (j = 40 - 1; j >= 0; j--)
+		{
+			if (Map[i][j] == 4)
+			{
+				if (Map[i + 1][j] == 1 && i <= 55)
+					ExitTheGame();
+				else if (Map[i + 1][j] == 3 || Map[i + 1][j] == 2)
+				{
+					Map[i][j] = 0;
+
+					if (Map[i + 1][j] == 2)
+					{
+						Map[i + 1][j] = 0;
+						score++;
+					}
+					break;
+				}
+				else {
+						basket_RunGame_SetEnemy = Map[i][j];
+						Map[i][j] = Map[i + 1][j];
+						Map[i + 1][j] = basket_RunGame_SetEnemy;
+				}
+			}
+		}
+	}
 }
 
 void RunGame_Draw()
@@ -29,7 +110,7 @@ void RunGame_Draw()
 
 	int i, j, basket_Draw;
 
-	printf("STAGE\n");
+	printf_s("SCORE = %d\n", score);
 
 	for (i = 0; i < 60; i++)
 	{
@@ -38,87 +119,69 @@ void RunGame_Draw()
 			switch (Map[i][j])
 			{
 			case 0:
-				printf("¤Ô");
+				printf_s("ã…¤");
 				break;
 			case 1:
-				printf("¡á");
+				if (i < 3 && j == 15)
+				{
+					Map[i][j] = 0;
+					printf_s("ã…¤");
+					break;
+				}
+				printf_s("â– ");
 				break;
 			case 2:
-				printf("¢Â");
-				if (Map[i - 1][j] == 3 || Map[i - 1][j] == 4)
+				printf_s("â—ˆ");
+				if (Map[i - 1][j] == 3 || Map[i - 1][j] == 5)
 				{
+					if (Map[i - 1][j] == 5)
+					{
+						Map[i - 1][j] = 0;
+					}
 					Map[i][j] = 0;
 					break;
 				}
 				else {
-					if (Map[i - 1][j] == 5)
-					{
-						basket_Draw = Map[i][j];
-						Map[i][j] = Map[i - 2][j];
-						Map[i - 2][j] = basket_Draw;
-					}
-					else {
 						basket_Draw = Map[i][j];
 						Map[i][j] = Map[i - 1][j];
 						Map[i - 1][j] = basket_Draw;
-					}
 				}
 				break;
 			case 3:
-				printf("¡à");
+				printf_s("â–¡");
 				break;
 			case 4:
-				printf("¡Ü");
-				if (i == 48 || Map[i + 1][j] == 2)
-				{
-					Map[i][j] = 0;
-					break;
-				}
-				else {
-					//if (Move == 10)
-					//{
-					basket_Draw = Map[i][j];
-					Map[i][j] = Map[i + 1][j];
-					Map[i + 1][j] = basket_Draw;
-					//}
-				}
-				break;
+				printf_s("â—");
 			default:
 				break;
 			}
 		}
-		printf("\n");
-		//	Move++;
+		printf_s("\n");
 	}
-	//Move++;
-	//if (Move == 10)
-		//Move = 0;
-	//Enemy_Spawn++;
-	printf("SCORE = %d %70s", score, "°­Á¦Á¾·áÇÏ·Á¸é ENTER¸¦...");
+	puts("ê°•ì œì¢…ë£Œí•˜ë ¤ë©´ ENTERë¥¼...");
 }
 
 void RunGameGetkey_moveblock(int Direction, int change_X_path, int plus_or_minus)
 {
 	int i, temp;
 
-	switch (Direction)
+	if (Direction == 0)
 	{
-	case 0:
-		for (i = 0; i < 14; i++)
-		{
-			Map[Plane[1][i]][Plane[0][i]] = 1;
+			for (i = 0; i < 14; i++)
+			{
+				Map[Plane[1][i]][Plane[0][i]] = 1;
 
-			temp = Map[Plane[1][i]][Plane[0][i]];
-			Map[Plane[1][i]][Plane[0][i]] = Map[Plane[1][i]][Plane[0][i] + change_X_path];
-			Map[Plane[1][i]][Plane[0][i] + change_X_path] = temp;
+				temp = Map[Plane[1][i]][Plane[0][i]];
+				Map[Plane[1][i]][Plane[0][i]] = Map[Plane[1][i]][Plane[0][i] + change_X_path];
+				Map[Plane[1][i]][Plane[0][i] + change_X_path] = temp;
 
-			if (plus_or_minus == 0)
-				Plane[0][i]++;
-			else
-				Plane[0][i]--;
-		}
-		break;
-	case 1:
+				if (plus_or_minus == 0)
+					Plane[0][i]++;
+				else
+					Plane[0][i]--;
+			}
+	}
+	else {
 		for (i = 13; i >= 0; i--)
 		{
 			Map[Plane[1][i]][Plane[0][i]] = 1;
@@ -132,27 +195,7 @@ void RunGameGetkey_moveblock(int Direction, int change_X_path, int plus_or_minus
 			else
 				Plane[0][i]--;
 		}
-		break;
 	}
-}
-
-void ExitTheGame()
-{
-	Sleep(100);
-	Clear_Consol();
-
-	system("mode con cols=35 lines=18");
-	printf("         ¦®¦¬¦¬¦¬¦³¦¬¦¯  ¦®¦³¦¬¦¬¦¬¦¯\n");
-	printf("         ¦­¦®¦¬¦¬¦´¦­¦±¦¯¦­¦²¦¯¦®¦¯¦­\n");
-	printf("         ¦­¦±¦¬¦¬¦´¦®¦¯¦±¦°¦­¦­¦­¦­¦­\n");
-	printf("         ¦­¦®¦¬¦¬¦´¦­¦±¦¯¦­¦­¦­¦­¦­¦­\n");
-	printf("         ¦­¦±¦¬¦¬¦´¦­  ¦­¦­¦²¦°¦±¦°¦­\n");
-	printf("         ¦±¦¬¦¬¦¬¦µ¦°  ¦±¦¬¦µ¦¬¦¬¦¬¦°\n");
-	printf("   ----------------------------\n");
-	printf("   |       SCORE : %d          |\n", score);
-	printf("   ----------------------------\n");
-
-	exit(0);
 }
 
 void RunGame_Getkey()
