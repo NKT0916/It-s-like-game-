@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-int Plane[2][14] = {    18,   20,
+int Plane[2][14] = {    		    18,   20,
 					 17,18,19,20,21,
 					 17,18,19,20,21,
 					 17,         21,
@@ -9,12 +9,12 @@ int Plane[2][14] = {    18,   20,
 					 57,57,57,57,57,
 					 58,         58 };
 
-/*int Enemy[5] = { 1,1,1,1,11,0,1,0,1,
+int Enemy[3][5] = {    1,0,1,0,1,
 					1,1,1,1,1,
-					0,1,1,1,0 };*/
+					0,1,1,1,0 };
 
 int Map[60][40] = { -1, };
 
 int Bullet_Start_Path[2] = { '\0', };
 
-int key, score = 0, Enemy_Spawn = 10, Move = 9;
+int key, score = 0, Enemy_Spawn = 0;
